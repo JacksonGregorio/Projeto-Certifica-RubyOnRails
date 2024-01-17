@@ -7,6 +7,7 @@ class AuthenticationController < ApplicationController
     if @user&.authenticate(params[:user][:password])
       token = JsonWebToken.encode(user_id: @user.id)
       time = Time.now + 24.hours.to_i
+      response.headers['Authorization'] = "Bearer #{token}"
       render json: { token: token, exp: time.strftime("%m-%d-%Y %H:%M"),
                      username: @user.username, type: @user.type_user, company: @user.company}, status: :ok
     else
