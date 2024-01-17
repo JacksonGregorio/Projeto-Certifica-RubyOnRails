@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
                 decode_id_user = @decoded[:user_id]
                 @current_user = User.find(decode_id_user)
               else
-                render json: { errors: 'Token is invalid' }, status: :unauthorized
+                render json: {errors: 'Token is invalid'}, status: :unauthorized
               end
             rescue ActiveRecord::RecordNotFound => e
               render json: { errors: e.message }, status: :unauthorized

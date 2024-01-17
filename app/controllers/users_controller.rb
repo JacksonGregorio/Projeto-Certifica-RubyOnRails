@@ -8,7 +8,6 @@ class UsersController < ApplicationController
       @users = User.all
       json_response(@users)
     end
-  
     
     def show
       render json: @user, status: :ok
@@ -53,8 +52,5 @@ class UsersController < ApplicationController
       rescue ActiveRecord::RecordNotFound
         render json: { errors: 'User not found' }, status: :not_found
     end
-
-
-  
     
 end
