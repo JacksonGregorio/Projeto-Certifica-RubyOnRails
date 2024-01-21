@@ -34,7 +34,6 @@ class CertificatesController < ApplicationController
     def list_filters
       @certificate = Certificate.all.order(validity: :desc)
       filter_cnpj if params[:number_cnpj].present? 
-      filter_company if params[:company].present?
       filter_title if params[:title].present?
       filter_value if params[:value].present?
       json_response(@certificate)
@@ -89,16 +88,16 @@ class CertificatesController < ApplicationController
       end
 
       def filter_cnpj
-        @certificate = @certificate.where('company_id = ? AND cnpj = ?', @current_user.company_id, params[:number_cnpj])
+        @certificate = @certificate.where('company_id = ? AND cnpj LIKE ?', @current_user.company_id, "%#{params[:number_cnpj]}%")
       end
 
       def filter_company
         @certificate = Certificate.all
-        @certificate = @certificate.where(company: params[@current_user.company_id])
+        @certificate = @certificate.where('company_id = ?', @current_user.company_id)
       end
 
       def filter_title
-        @certificate = @certificate.where('company_id = ? AND title = ?', @current_user.company_id, params[:title])
+        @certificate = @certificate.where('company_id = ? AND title LIKE ?', @current_user.company_id, "%#{params[:title]}%")
       end
 
       def filter_value
