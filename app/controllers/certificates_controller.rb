@@ -2,7 +2,7 @@ class CertificatesController < ApplicationController
     before_action :set_certificate, only: [:show, :update, :destroy]
     before_action :authorize_request
     before_action :check_type_admin, except: [:list_filters_expired, :list_filters]
-    before_action :check_type_user, only: [:list_filters_expired, :list_filters]
+    before_action :check_type_user, only: [:list_filters_expired, :list_filters , :all_company_certificates, :expireds_certificade]
 
     def index
       @certificates = Certificate.all
@@ -14,11 +14,20 @@ class CertificatesController < ApplicationController
       render json: @certificate, status: :ok
     end
 
+    def all_company_certificates
+      @certificates = filter_company.order(validity: :desc)
+      json_response(@certificates)
+    end
+
+    def expireds_certificade
+      @certificates = filter_validity_id.order(validity: :desc)
+      json_response(@certificates)
+    end
+
+
     def list_filters_expired
       @certificate = Certificate.all.order(validity: :desc)
       filter_validity_cnpj if params[:number_cnpj].present?
-      filter_validity_id if params[:number_id].present?
-
       json_response(@certificate)
     end
 
@@ -26,7 +35,8 @@ class CertificatesController < ApplicationController
       @certificate = Certificate.all.order(validity: :desc)
       filter_cnpj if params[:number_cnpj].present? 
       filter_company if params[:company].present?
-      
+      filter_title if params[:title].present?
+      filter_value if params[:value].present?
       json_response(@certificate)
     end
   
@@ -74,15 +84,25 @@ class CertificatesController < ApplicationController
       end
 
       def filter_validity_id
-        @certificate = @certificate.where('company_id = ? AND validity < ?', params[:number_id], Time.now)
+        @certificate = Certificate.all
+        @certificate = @certificate.where('company_id = ? AND validity < ?', @current_user.company_id, Time.now)
       end
 
       def filter_cnpj
-        @certificate = @certificate.where(cnpj: params[:number_cnpj])
+        @certificate = @certificate.where('company_id = ? AND cnpj = ?', @current_user.company_id, params[:number_cnpj])
       end
 
       def filter_company
-        @certificate = @certificate.where(company: params[:company])
+        @certificate = Certificate.all
+        @certificate = @certificate.where(company: params[@current_user.company_id])
+      end
+
+      def filter_title
+        @certificate = @certificate.where('company_id = ? AND title = ?', @current_user.company_id, params[:title])
+      end
+
+      def filter_value
+        @certificate = @certificate.where('company_id = ? AND value = ?', @current_user.company_id, params[:value])
       end
 
 end

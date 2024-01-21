@@ -15,6 +15,8 @@ Rails.application.routes.draw do
     #certificates
     get '/filters/certificate', to: 'certificates#list_filters'
     get '/filters/certificate/expired', to: 'certificates#list_filters_expired'
+    get '/get/all/certificate/expired', to: 'certificates#expireds_certificade'
+    get '/get/all/certificate/company', to: 'certificates#all_company_certificates'
     post '/create/certificate', to: 'certificates#create'
     get '/get/all/certificate', to: 'certificates#index'
     get '/get/certificate/:id', to: 'certificates#show'
