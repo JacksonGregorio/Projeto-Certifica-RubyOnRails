@@ -49,6 +49,14 @@ class ApplicationController < ActionController::Base
         end
       end
 
+      def check_type_superadmin
+        if @current_user.superadmin?
+          return true
+        else
+          json_response( error: 'Unathorized you not a valid superadmin' , status: :unauthorized)
+        end
+      end
+
       private
 
       def json_response(object, status = :ok)

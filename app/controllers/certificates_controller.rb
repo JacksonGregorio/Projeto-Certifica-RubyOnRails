@@ -1,7 +1,8 @@
 class CertificatesController < ApplicationController
     before_action :set_certificate, only: [:show, :update, :destroy]
     before_action :authorize_request
-    before_action :check_type_admin, except: [:list_filters_expired, :list_filters]
+    before_action :check_type_superadmin, only: [:create, :destroy, :update, :index, :show]
+    before_action :check_type_admin, except: [:list_filters_expired, :list_filters,]
     before_action :check_type_user, only: [:list_filters_expired, :list_filters , :all_company_certificates, :expireds_certificade]
 
     def index

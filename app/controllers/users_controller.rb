@@ -1,7 +1,8 @@
 class UsersController < ApplicationController
     before_action :filter_user, except: %i[create index]
     before_action :authorize_request, except: [:create]
-    before_action :check_type_user, except: [:create]
+    before_action :check_type_user, except: [:create, :update, :destroy]
+    before_action :check_type_superadmin , except: [:create]
   
     
     def index

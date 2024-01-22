@@ -1,7 +1,7 @@
 class CompaniesController < ApplicationController
     before_action :set_company, only: [ :update, :destroy]
     before_action :authorize_request , except: [:create]
-    before_action :check_type_admin, except: [:update]
+    before_action :check_type_superadmin, except: [:update]
     before_action :check_type_user, only: [:update]
 
     def index

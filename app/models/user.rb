@@ -9,11 +9,15 @@ class User < ApplicationRecord
   validates :name, presence: true, uniqueness: false
   validates :password, length: { minimum: 6 }, if: -> { new_record? || !password.nil? }
 
+  def superadmin?
+    type_user == 'superadmin'
+  end
+
   def admin?
-    type_user == 'admin'
+    type_user == 'admin' || type_user == 'superadmin'
   end
 
   def user?
-    type_user == 'user' || type_user == 'admin'
+    type_user == 'user' || type_user == 'admin' || type_user == 'superadmin'
   end
 end
